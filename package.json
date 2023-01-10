@@ -4,6 +4,7 @@
   "description": "An analytics collector",
   "main": "hello.js",
   "scripts": {
+    "build": "terser index.js --compress --comments /^!/ --mangle --ie8 --safari10 --ecma 5 --toplevel --warn --output dist/pushbroom.js",
     "test": "test"
   },
   "repository": {
@@ -18,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/stucco-software/pushbroom-script/issues"
   },
-  "homepage": "https://github.com/stucco-software/pushbroom-script#readme"
+  "homepage": "https://github.com/stucco-software/pushbroom-script#readme",
+  "devDependencies": {
+    "terser": "^5.16.1"
+  }
 }
