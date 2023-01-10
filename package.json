@@ -1,0 +1,22 @@
+{
+  "name": "pushbroom-script",
+  "version": "0.0.1",
+  "description": "An analytics collector",
+  "main": "hello.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stucco-software/pushbroom-script.git"
+  },
+  "keywords": [
+    "analytics"
+  ],
+  "author": "https://nikolas.ws",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stucco-software/pushbroom-script/issues"
+  },
+  "homepage": "https://github.com/stucco-software/pushbroom-script#readme"
+}
