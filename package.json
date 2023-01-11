@@ -4,8 +4,10 @@
   "description": "An analytics collector",
   "main": "hello.js",
   "scripts": {
-    "build": "terser index.js --compress --comments /^!/ --mangle --ie8 --safari10 --ecma 5 --toplevel --warn --output dist/pushbroom.js",
-    "test": "test"
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "min": "terser static/index.js --compress --comments /^!/ --mangle --ie8 --safari10 --ecma 5 --toplevel --warn --output static/index.min.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +22,13 @@
     "url": "https://github.com/stucco-software/pushbroom-script/issues"
   },
   "homepage": "https://github.com/stucco-software/pushbroom-script#readme",
+  "type": "module",
   "devDependencies": {
+    "@sveltejs/adapter-auto": "next",
+    "@sveltejs/kit": "next",
+    "svelte": "^3.54.0",
+    "vite": "^4.0.0",
+    "vitest": "^0.25.3",
     "terser": "^5.16.1"
   }
 }
