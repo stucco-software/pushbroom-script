@@ -7,7 +7,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "min": "terser static/index.js --compress --comments /^!/ --mangle --ie8 --safari10 --ecma 5 --toplevel --warn --output static/index.min.js"
+    "min": "terser static/ping.js --compress --comments /^!/ --mangle --ie8 --safari10 --ecma 5 --toplevel --warn --output static/ping.min.js"
   },
   "repository": {
     "type": "git",

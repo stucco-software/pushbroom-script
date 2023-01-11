@@ -1,9 +1,9 @@
 /*! pushbroom.c0 0.0.1 */
 
 ;(async function (window, document, host) {
-  // Use a custom domain or not
-  host = host[0] === '{' ? 'analytics.pushbroom.co' : host
-
+  const loc = window.location
+  host = host[0] === '{' ? 'analytics' + loc.hostname : host
+  console.log(host)
   const nav = window.navigator
 
   // Kill requests from bots and spiders
@@ -53,7 +53,6 @@
     })
   }
 
-  const loc = window.location
   const perf = window.performance
   const screen = window.screen
 
