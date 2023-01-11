@@ -2,7 +2,7 @@
 
 ;(async function (window, document, host) {
   const loc = window.location
-  host = host[0] === '{' ? 'analytics' + loc.hostname : host
+  host = host[0] === '{' ? 'analytics.' + loc.hostname : host
   console.log(host)
   const nav = window.navigator
 
