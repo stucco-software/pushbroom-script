@@ -2,8 +2,8 @@
 ;(async function (window, document, host) {
   const loc = window.location
   let prev
-  // host = host[0] === '{' ? 'analytics.' + loc.hostname : host
-  host = host[0] === '{' ? 'localhost:5174' : host
+  host = host[0] === '{' ? 'analytics.' + loc.hostname : host
+  // host = host[0] === '{' ? 'localhost:5174' : host
   const nav = window.navigator
 
   // Kill requests from bots and spiders
@@ -45,7 +45,7 @@
     return new Promise((resolve, reject) => {
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
-          resolve(parseFloat(xhr.response))
+          resolve(xhr.response)
         }
       }
       xhr.open('GET', url)
@@ -56,8 +56,8 @@
   // const perf = window.performance
   const screen = window.screen
 
-  // const url = 'https://' + host
-  const url = 'http://' + host
+  const url = 'https://' + host
+  // const url = 'http://' + host
   const now = () => Date.now()
   const add = () => (duration += now() - snapshot)
 
@@ -90,18 +90,10 @@
     snapshot = start
     duration = 0
 
-    // Get the load time
-    // let time =
-    //   perf && perf[tm]
-    //     ? perf[tm].domContentLoadedEventEnd - perf[tm].navigationStart
-    //     : 0
-
     // set data package
     data = {
       r: document.referrer,
       w: screen.width,
-      // s: 0, // temporary placeholder
-      // t: time > 0 ? time : 0,
       p: loc.href,
     }
 
@@ -113,28 +105,27 @@
       send(url + cache + h).then(u => {
         console.log(u)
         data.u = u
-      }),
-      // send(url + cache + h + p).then(up => {
-      //   data.up = up
-      // }),
+      })
     ])
     prev = data.p
-    send(url + '/hello?' + params(data), true)
+    send(url + '/hello?' + params(data), true).then(r => {
+      window.vid = r
+    })
   }
 
   document[ael]('visibilitychange', () => {
     document.hidden ? add() : (snapshot = now())
   })
 
-  // const sendDuration = async () => {
-  //   if (window[disable]) {
-  //     return
-  //   }
-  //   !document.hidden ? add() : null
-  //   await beacon(url + '/duration', { d: duration, n: start, p: loc.href })
-  // }
+  const sendDuration = async () => {
+    if (window[disable]) {
+      return
+    }
+    !document.hidden ? add() : null
+    await beacon(url + '/duration', { d: duration, v: vid })
+  }
   // log the pageview duration
-  // window[ael]('beforeunload', sendDuration)
+  window[ael]('beforeunload', sendDuration)
 
   let _pushState = function (type) {
     let original = history[type]
@@ -155,7 +146,7 @@
 
   window.history[ps] = _pushState(ps)
   window[ael](ps, () => {
-    // sendDuration()
+    sendDuration()
     pageview()
   })
 
@@ -167,9 +158,8 @@
       add()
       const data = {
         e: value,
-        p: loc.href,
-        d: duration,
-        n: start,
+        v: vid,
+        d: duration
       }
       await beacon(url + '/event', data)
       callback && callback()
