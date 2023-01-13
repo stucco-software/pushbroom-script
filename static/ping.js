@@ -1,9 +1,9 @@
 /*! pushbroom.c0 0.0.1 */
-
 ;(async function (window, document, host) {
   const loc = window.location
-  host = host[0] === '{' ? 'analytics.' + loc.hostname : host
-  console.log(host)
+  let prev
+  // host = host[0] === '{' ? 'analytics.' + loc.hostname : host
+  host = host[0] === '{' ? 'localhost:5174' : host
   const nav = window.navigator
 
   // Kill requests from bots and spiders
@@ -17,7 +17,7 @@
     cache = '/cache?',
     ps = 'pushState',
     sb = 'sendBeacon',
-    tm = 'timing',
+    // tm = 'timing',
     ls = 'localStorage',
     ci = 'Pushbroom is',
     blocked = ['unblocked', 'blocked'],
@@ -53,10 +53,11 @@
     })
   }
 
-  const perf = window.performance
+  // const perf = window.performance
   const screen = window.screen
 
-  const url = 'https://' + host // Should always be https://, only http:// for local testing
+  // const url = 'https://' + host
+  const url = 'http://' + host
   const now = () => Date.now()
   const add = () => (duration += now() - snapshot)
 
@@ -90,32 +91,34 @@
     duration = 0
 
     // Get the load time
-    let time =
-      perf && perf[tm]
-        ? perf[tm].domContentLoadedEventEnd - perf[tm].navigationStart
-        : 0
+    // let time =
+    //   perf && perf[tm]
+    //     ? perf[tm].domContentLoadedEventEnd - perf[tm].navigationStart
+    //     : 0
 
     // set data package
     data = {
       r: document.referrer,
       w: screen.width,
-      s: 0, // temporary placeholder
-      t: time > 0 ? time : 0,
+      // s: 0, // temporary placeholder
+      // t: time > 0 ? time : 0,
       p: loc.href,
     }
 
+    data.r ? data.r = data.r : data.r = prev
     let h = loc.hostname
     let p = loc.pathname
 
     await Promise.all([
       send(url + cache + h).then(u => {
+        console.log(u)
         data.u = u
       }),
-      send(url + cache + h + p).then(up => {
-        data.up = up
-      }),
+      // send(url + cache + h + p).then(up => {
+      //   data.up = up
+      // }),
     ])
-
+    prev = data.p
     send(url + '/hello?' + params(data), true)
   }
 
@@ -123,15 +126,15 @@
     document.hidden ? add() : (snapshot = now())
   })
 
-  const sendDuration = async () => {
-    if (window[disable]) {
-      return
-    }
-    !document.hidden ? add() : null
-    await beacon(url + '/duration', { d: duration, n: start, p: loc.href })
-  }
+  // const sendDuration = async () => {
+  //   if (window[disable]) {
+  //     return
+  //   }
+  //   !document.hidden ? add() : null
+  //   await beacon(url + '/duration', { d: duration, n: start, p: loc.href })
+  // }
   // log the pageview duration
-  window[ael]('beforeunload', sendDuration)
+  // window[ael]('beforeunload', sendDuration)
 
   let _pushState = function (type) {
     let original = history[type]
@@ -152,7 +155,7 @@
 
   window.history[ps] = _pushState(ps)
   window[ael](ps, () => {
-    sendDuration()
+    // sendDuration()
     pageview()
   })
 

@@ -1,6 +1,9 @@
 <h1>Pushbroom Script</h1>
 <ul>
   <li>
+    <a href="/cool">Cool</a>
+  </li>
+  <li>
     <a href="/ping.js">ping.js</a>
   </li>
   <li>
