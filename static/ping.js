@@ -56,8 +56,8 @@
   // const perf = window.performance
   const screen = window.screen
 
-  const url = 'https://' + host
-  // const url = 'http://' + host
+  // const url = 'https://' + host
+  const url = 'http://' + host
   const now = () => Date.now()
   const add = () => (duration += now() - snapshot)
 
