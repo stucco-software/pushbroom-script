@@ -1,10 +1,10 @@
 /*! pushbroom.c0 0.0.1 */
-;(async function (window, document, host) {
-  const loc = window.location
+;(async function (w, document, host) {
+  const loc = w.location
   let prev
   host = host[0] === '{' ? 'analytics.' + loc.hostname : host
   // host = host[0] === '{' ? 'localhost:5174' : host
-  const nav = window.navigator
+  const nav = w.navigator
 
   // Kill requests from bots and spiders
   if (nav.userAgent.search(/(bot|spider|crawl)/gi) > -1) {
@@ -21,11 +21,12 @@
     ls = 'localStorage',
     ci = 'Pushbroom is',
     blocked = ['unblocked', 'blocked'],
-    dce = 'data-pushbroom-event',
+    dce = 'pushbroom',
     log = console.log
+    c = 'click'
 
   const block = viaPage => {
-    let b = parseFloat(window[ls].getItem(blocked[1]))
+    let b = parseFloat(w[ls].getItem(blocked[1]))
     b &&
       viaPage &&
       log(
@@ -53,8 +54,8 @@
     })
   }
 
-  // const perf = window.performance
-  const screen = window.screen
+  // const perf = w.performance
+  const screen = w.screen
 
   const url = 'https://' + host
   // const url = 'http://' + host
@@ -80,11 +81,11 @@
   let start, snapshot, duration, data
 
   const pageview = async () => {
-    if (window[disable]) {
-      delete window[disable]
+    if (w[disable]) {
+      delete w[disable]
       return
     }
-    delete window[disable]
+    delete w[disable]
 
     start = now()
     snapshot = start
@@ -103,13 +104,12 @@
 
     await Promise.all([
       send(url + cache + h).then(u => {
-        console.log(u)
         data.u = u
       })
     ])
     prev = data.p
     send(url + '/hello?' + params(data), true).then(r => {
-      window.vid = r
+      w.vid = r
     })
   }
 
@@ -118,14 +118,14 @@
   })
 
   const sendDuration = async () => {
-    if (window[disable]) {
+    if (w[disable]) {
       return
     }
     !document.hidden ? add() : null
     await beacon(url + '/duration', { d: duration, v: vid })
   }
   // log the pageview duration
-  window[ael]('beforeunload', sendDuration)
+  w[ael]('beforeunload', sendDuration)
 
   let _pushState = function (type) {
     let original = history[type]
@@ -139,40 +139,38 @@
         e.initEvent(type, true, true)
       }
       e.arguments = arguments
-      window.dispatchEvent(e)
+      w.dispatchEvent(e)
       return r
     }
   }
 
-  window.history[ps] = _pushState(ps)
-  window[ael](ps, () => {
+  w.history[ps] = _pushState(ps)
+  w[ael](ps, () => {
     sendDuration()
     pageview()
   })
 
-  let listener = e => pushbroom.event(e.target.getAttribute(dce))
+  let listener = e => e.target.dataset[dce] && pushbroom.event(Object.assign({}, e.target.dataset))
 
   // add global object for capturing events
-  window.pushbroom = {
+  w.pushbroom = {
     async event(value, callback) {
       add()
       const data = {
         e: value,
         v: vid,
+        s: c,
         d: duration
       }
       await beacon(url + '/event', data)
       callback && callback()
     },
     initEvents() {
-      document.querySelectorAll('[' + dce + ']').forEach(item => {
-        item[rel]('click', listener)
-        item[ael]('click', listener)
-      })
+      w.addEventListener(c, listener)
     },
     blockMe(v) {
       v = v ? 1 : 0
-      window[ls].setItem(blocked[1], v)
+      w[ls].setItem(blocked[1], v)
       log(ci + ' now ' + blocked[v] + ' on ' + loc.hostname)
     },
   }
