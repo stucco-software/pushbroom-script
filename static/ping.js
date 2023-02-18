@@ -7,7 +7,7 @@
   const nav = w.navigator
 
   // Kill requests from bots and spiders
-  if (nav.userAgent.search(/(bot|spider|crawl)/gi) > -1) {
+  if (nav.userAgent.search(/(bot|spider|crawl|preview)/gi) > -1) {
     return
   }
 
@@ -17,7 +17,6 @@
     cache = '/cache?',
     ps = 'pushState',
     sb = 'sendBeacon',
-    // tm = 'timing',
     ls = 'localStorage',
     ci = 'Pushbroom is',
     blocked = ['unblocked', 'blocked'],
